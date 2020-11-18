@@ -1,0 +1,339 @@
+{
+  "NoteTableScript": "
+  CREATE TABLE [dbo].[Note](
+    [note_id] [int] IDENTITY(1,1) NOT NULL,
+    [note_title] [varchar](50) NOT NULL,
+    [note_content] [varchar](max) NOT NULL,
+    [note_status] [varchar](20) NOT NULL,
+    [note_creation_date] [datetime] NOT NULL,
+    [user_id] [int] NOT NULL,
+   CONSTRAINT [PK_Note] PRIMARY KEY CLUSTERED 
+  (
+    [note_id] ASC
+  )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+  ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+  --GO
+  
+  ALTER TABLE [dbo].[Note]  WITH CHECK ADD  CONSTRAINT [FK_Note_User] FOREIGN KEY([user_id])
+  REFERENCES [dbo].[User] ([user_id])
+  --GO
+  
+  ALTER TABLE [dbo].[Note] CHECK CONSTRAINT [FK_Note_User]
+  --GO",
+  "UserTableScript": "
+  CREATE TABLE [dbo].[User](
+    [user_id] [int] NOT NULL,
+    [user_name] [varchar](50) NOT NULL,
+    [user_added_date] [datetime] NOT NULL,
+    [user_password] [varchar](50) NOT NULL,
+    [user_mobile] [bigint] NOT NULL,
+   CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED 
+  (
+    [user_id] ASC
+  )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+  ) ON [PRIMARY]
+  --GO",
+  "CategoryTableScript":"
+  CREATE TABLE [dbo].[Category](
+    [category_id] [int] IDENTITY(1,1) NOT NULL,
+    [category_name] [varchar](50) NOT NULL,
+    [category_descr] [varchar](max) NOT NULL,
+    [category_creation_date] [datetime] NOT NULL,
+    [category_creator] [int] NOT NULL,
+   CONSTRAINT [PK_Category] PRIMARY KEY CLUSTERED 
+  (
+    [category_id] ASC
+  )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+  ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+  --GO
+  
+  ALTER TABLE [dbo].[Category]  WITH CHECK ADD  CONSTRAINT [FK_Category_User] FOREIGN KEY([category_creator])
+  REFERENCES [dbo].[User] ([user_id])
+  --GO
+  
+  ALTER TABLE [dbo].[Category] CHECK CONSTRAINT [FK_Category_User]
+  --GO",
+  "ReminderTableScript":"
+  CREATE TABLE [dbo].[Reminder](
+    [reminder_id] [int] IDENTITY(1,1) NOT NULL,
+    [reminder_name] [varchar](50) NOT NULL,
+    [reminder_descr] [varchar](max) NOT NULL,
+    [reminder_type] [varchar](50) NOT NULL,
+    [reminder_creation_date] [datetime] NOT NULL,
+    [reminder_creator] [int] NOT NULL,
+   CONSTRAINT [PK_Reminder] PRIMARY KEY CLUSTERED 
+  (
+    [reminder_id] ASC
+  )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+  ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+  --GO
+  
+  ALTER TABLE [dbo].[Reminder]  WITH CHECK ADD  CONSTRAINT [FK_Reminder_User] FOREIGN KEY([reminder_creator])
+  REFERENCES [dbo].[User] ([user_id])
+  --GO
+  
+  ALTER TABLE [dbo].[Reminder] CHECK CONSTRAINT [FK_Reminder_User]
+  -- GO",
+  "NoteCategoryTableScript":"
+  CREATE TABLE [dbo].[NoteCategory](
+    [notecategory_id] [int] IDENTITY(1,1) NOT NULL,
+    [note_id] [int] NOT NULL,
+    [category_id] [int] NOT NULL,
+   CONSTRAINT [PK_NoteCategory] PRIMARY KEY CLUSTERED 
+  (
+    [notecategory_id] ASC
+  )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+  ) ON [PRIMARY]
+  --GO
+  
+  ALTER TABLE [dbo].[NoteCategory]  WITH CHECK ADD  CONSTRAINT [FK_NoteCategory_Category] FOREIGN KEY([category_id])
+  REFERENCES [dbo].[Category] ([category_id])
+  --GO
+  
+  ALTER TABLE [dbo].[NoteCategory] CHECK CONSTRAINT [FK_NoteCategory_Category]
+  --GO
+  
+  ALTER TABLE [dbo].[NoteCategory]  WITH CHECK ADD  CONSTRAINT [FK_NoteCategory_Note] FOREIGN KEY([note_id])
+  REFERENCES [dbo].[Note] ([note_id])
+  --GO
+  
+  ALTER TABLE [dbo].[NoteCategory] CHECK CONSTRAINT [FK_NoteCategory_Note]
+  --GO",
+  "NoteReminderTableScript":"
+  CREATE TABLE [dbo].[NoteReminder](
+    [notereminder_id] [int] IDENTITY(1,1) NOT NULL,
+    [note_id] [int] NOT NULL,
+    [reminder_id] [int] NOT NULL,
+   CONSTRAINT [PK_NoteReminder] PRIMARY KEY CLUSTERED 
+  (
+    [notereminder_id] ASC
+  )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+  ) ON [PRIMARY]
+  --GO
+  
+  ALTER TABLE [dbo].[NoteReminder]  WITH CHECK ADD  CONSTRAINT [FK_NoteReminder_Note] FOREIGN KEY([note_id])
+  REFERENCES [dbo].[Note] ([note_id])
+  --GO
+  
+  ALTER TABLE [dbo].[NoteReminder] CHECK CONSTRAINT [FK_NoteReminder_Note]
+  --GO
+  
+  ALTER TABLE [dbo].[NoteReminder]  WITH CHECK ADD  CONSTRAINT [FK_NoteReminder_Reminder] FOREIGN KEY([reminder_id])
+  REFERENCES [dbo].[Reminder] ([reminder_id])
+  --GO
+  
+  ALTER TABLE [dbo].[NoteReminder] CHECK CONSTRAINT [FK_NoteReminder_Reminder]
+  --GO
+  ",
+  "InsertScripts":{
+    "User":"
+    INSERT INTO [dbo].[User]
+               ([user_id]
+               ,[user_name]
+               ,[user_added_date]
+               ,[user_password]
+               ,[user_mobile])
+         VALUES
+               (112233
+               ,'Maya'
+               ,'2019-01-02'
+               ,'Maya1214'
+               ,8012345679)
+               --GO
+    INSERT INTO [dbo].[User]
+               ([user_id]
+               ,[user_name]
+               ,[user_added_date]
+               ,[user_password]
+               ,[user_mobile])
+         VALUES
+               (112244
+               ,'Nair'
+               ,'2019-01-11'
+               ,'Welcome'
+               ,9023778467)
+               --GO
+    ",
+    "Note":"
+    INSERT INTO [dbo].[Note]
+               ([note_title]
+               ,[note_content]
+               ,[note_status]
+               ,[note_creation_date]
+               ,[user_id])
+         VALUES
+               ('Today Tasks'
+               ,'1.Check emails and reply to them 2.Start the program'
+               ,'InProgress'
+               ,'2019-01-21'
+               ,112233)
+               --GO
+    
+    INSERT INTO [dbo].[Note]
+               ([note_title]
+               ,[note_content]
+               ,[note_status]
+               ,[note_creation_date]
+               ,[user_id])
+         VALUES
+               ('Training to plan'
+               ,'1.Application related 2.Technical related'
+               ,'Yet To Start'
+               ,'2019-01-31'
+               ,112244)
+               --GO
+    INSERT INTO [dbo].[Note]
+               ([note_title]
+               ,[note_content]
+               ,[note_status]
+               ,[note_creation_date]
+               ,[user_id])
+         VALUES
+               ('Things to have today'
+               ,'1.Fruits 2.More water'
+               ,'InProgress'
+               ,'2019-01-25'
+               ,112244)
+               --GO
+    
+    
+    ",
+    "Category":"
+    INSERT INTO [dbo].[Category]
+               ([category_name]
+               ,[category_descr]
+               ,[category_creation_date]
+               ,[category_creator])
+         VALUES
+               ('Official'
+               ,'Office related notes'
+               ,'2019-01-21'
+               ,112233)
+               --GO
+    INSERT INTO [dbo].[Category]
+               ([category_name]
+               ,[category_descr]
+               ,[category_creation_date]
+               ,[category_creator])
+         VALUES
+               ('Diet'
+               ,'Health related notes'
+               ,'2019-01-24'
+               ,112244)
+               --   GO
+    
+    
+    ",
+    "Reminder":"
+    INSERT INTO [dbo].[Reminder]
+               ([reminder_name]
+               ,[reminder_descr]
+               ,[reminder_type]
+               ,[reminder_creation_date]
+               ,[reminder_creator])
+         VALUES
+               ('KT reminder'
+               ,'Session on technical queries'
+               ,'Office Reminders'
+               ,'2019-02-12'
+               ,112233)
+               --GO
+    
+    INSERT INTO [dbo].[Reminder]
+               ([reminder_name]
+               ,[reminder_descr]
+               ,[reminder_type]
+               ,[reminder_creation_date]
+               ,[reminder_creator])
+         VALUES
+               ('Personal reminder'
+               ,'Pick children'
+               ,'Personal Reminders'
+               ,'2019-02-14'
+               ,112244)
+               --GO
+    
+    
+    ",
+    "NoteCategory":"
+    INSERT INTO [dbo].[NoteCategory]
+               ([note_id]
+               ,[category_id])
+         VALUES
+               (1
+               ,1)
+               --GO
+    INSERT INTO [dbo].[NoteCategory]
+               ([note_id]
+               ,[category_id])
+         VALUES
+               (2
+               ,1)
+               --GO
+    INSERT INTO [dbo].[NoteCategory]
+               ([note_id]
+               ,[category_id])
+         VALUES
+               (3
+               ,2)
+               --GO",
+    "NoteReminder":"
+    INSERT INTO [dbo].[NoteReminder]
+               ([note_id]
+               ,[reminder_id])
+         VALUES
+               (3
+               ,2)
+               --GO
+    
+    INSERT INTO [dbo].[NoteReminder]
+               ([note_id]
+               ,[reminder_id])
+         VALUES
+               (2
+               ,1)
+               --GO"
+  },
+  "Query1":"SELECT *  FROM [dbo].[User] where user_password='Maya1214' and user_id=112233;",
+  "Query2":"SELECT *  FROM [dbo].[Note] where note_creation_date='01/31/2019';",
+  "Query3":"SELECT *  FROM [dbo].[Category] where category_creation_date>'01/22/2019';",
+  "Query4":"SELECT cat.category_id,
+  cat.category_name,
+  cat.category_descr,
+  cat.category_creation_date,
+  cat.category_creator
+          FROM [dbo].[NoteCategory] noteCat
+          inner join [dbo].[Category] cat 
+            on noteCat.category_id=cat.category_id
+          inner join [dbo].[Note] note
+            on noteCat.note_id=note.note_id
+          where note.note_id=1",
+  "Query5":"SELECT *  FROM [dbo].[Note] where user_id=112244;",
+  "Query6":"select note.note_id,
+  note.note_title,
+  note.note_content,
+  note.note_status,
+  note.note_creation_date,
+  note.user_id
+          from [dbo].[NoteCategory]  noteCat
+          inner join [dbo].[Note] note
+          on noteCat.note_id=note.note_id
+          inner join [dbo].[Category] cat 
+          on noteCat.Category_id=cat.category_id
+          where cat.category_id=1;",
+  "Query7":"SELECT rem.reminder_id,
+  rem.reminder_name,
+  rem.reminder_descr,
+  rem.reminder_type,
+  rem.reminder_creation_date, 
+  rem.reminder_creator  ,note.note_id
+    FROM [dbo].[NoteReminder] noteRem        
+        inner join [dbo].[Reminder] rem
+    on noteRem.reminder_id=rem.reminder_id
+        inner join [dbo].[Note] note
+        on noteRem.note_id=note.note_id		
+    where  noteRem.note_id=2;",
+  "Query8":"update [dbo].[Note] set note_status='Completed' where note_id=3",
+  "Query9":"insert into [dbo].[NoteReminder] select 1,reminder_id from [dbo].[Reminder] where reminder_type='Personal Reminders'",
+  "Query10":"delete FROM [dbo].[NoteReminder] where note_id=2;"
+}
